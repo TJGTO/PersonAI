@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Send } from "lucide-react";
 import { users } from "../../data/users";
 
 const ChatUI = ({ userId }: { userId: string }) => {
@@ -68,21 +69,21 @@ const ChatUI = ({ userId }: { userId: string }) => {
         <div className="flex items-center gap-4 pb-6 border-b border-white/30">
           <button
             onClick={() => router.push("/persona")}
-            className="px-3 py-1 rounded-lg bg-purple-500 text-white hover:bg-purple-600 transition"
+            className="px-3 py-1 rounded-lg bg-white/20 text-gray-800 hover:bg-white/30 transition font-medium"
           >
             ← Back
           </button>
           <img
-            src={user.imageUrl}
+            src={user.avatar}
             alt={user.name}
             className="w-14 h-14 rounded-full border-2 border-pink-500 object-cover"
           />
           <div>
-            <div className="text-xl font-bold text-white">{user.name}</div>
-            <div className="text-sm text-white/80">{user.personStatus}</div>
+            <div className="text-xl font-bold text-gray-800">{user.name}</div>
+            <div className="text-sm text-gray-700">{user.personStatus}</div>
             <div className="flex items-center gap-1 mt-1">
               <span className="w-2.5 h-2.5 bg-green-500 rounded-full"></span>
-              <span className="text-xs text-green-100 font-medium">Online</span>
+              <span className="text-xs text-green-700 font-medium">Online</span>
             </div>
           </div>
         </div>
@@ -92,13 +93,36 @@ const ChatUI = ({ userId }: { userId: string }) => {
           ref={chatRef}
           className="flex-1 overflow-y-auto py-6 flex flex-col gap-4 scrollbar-hide p-4"
         >
+          <style jsx>{`
+            @keyframes shimmer {
+              0% {
+                background-position: -200% 0;
+              }
+              100% {
+                background-position: 200% 0;
+              }
+            }
+            .typing-glow {
+              background: linear-gradient(
+                90deg,
+                #7c3aed 25%,
+                #a855f7 50%,
+                #7c3aed 75%
+              );
+              background-size: 200% 100%;
+              animation: shimmer 1.5s infinite;
+            }
+          `}</style>
+
           {messages.map((msg, idx) => (
             <div
               key={idx}
               className={`max-w-[70%] px-4 py-2 rounded-lg shadow-md ${
                 msg.sender === "user"
                   ? "bg-pink-500 text-white self-end"
-                  : "bg-purple-500 text-white self-start"
+                  : msg.isTyping
+                  ? "typing-glow text-white self-start"
+                  : "bg-purple-600 text-white self-start"
               }`}
             >
               {msg.text}
@@ -110,16 +134,17 @@ const ChatUI = ({ userId }: { userId: string }) => {
         <div className="pt-6 border-t border-white/30 flex items-center gap-2">
           <input
             type="text"
-            className="flex-1 px-4 py-2 rounded-lg bg-white/30 text-white placeholder-white/80 focus:outline-none"
+            className="flex-1 px-4 py-2 rounded-lg bg-white/30 text-gray-800 placeholder-gray-600 focus:outline-none focus:bg-white/40"
             placeholder="Type your message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
           />
           <button
-            className="px-6 py-2 rounded-lg bg-pink-500 text-white font-semibold hover:bg-pink-600 transition"
+            className="px-6 py-2 rounded-lg bg-pink-500 text-white font-semibold hover:bg-pink-600 transition flex items-center justify-center gap-2"
             onClick={handleSend}
           >
+            <Send size={18} />
             Send
           </button>
         </div>
