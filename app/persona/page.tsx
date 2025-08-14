@@ -39,7 +39,7 @@ const PersonaAILanding = () => {
 
   const handleStartChat = (personaId: string) => {
     console.log(`Starting chat with: ${personaId}`);
-    router.push("/chat?id=" + personaId);
+    router.push("/chatscreen?id=" + personaId);
 
     // Add your navigation logic here
   };

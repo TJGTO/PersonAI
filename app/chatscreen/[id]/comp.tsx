@@ -1,25 +1,15 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { users } from "../../data/users";
 
-const ChatUI = () => {
-  console.log("ChatUI component rendered");
-  const searchParams = useSearchParams();
+const ChatUI = ({ userId }: { userId: string }) => {
   const router = useRouter();
-  const [userId, setUserId] = useState<string>("");
-  const [user, setUser] = useState<any>(null);
+  const user = users.find((u) => u.id === userId) || users[0];
 
   const [messages, setMessages] = useState<Array<any>>([]);
   const [input, setInput] = useState("");
   const chatRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const id = searchParams.get("id") || "1";
-    setUserId(id);
-    const user = users.find((u) => u.id === id) || users[0];
-    setUser(user);
-  }, [searchParams]);
 
   useEffect(() => {
     if (chatRef.current) {
@@ -27,7 +17,6 @@ const ChatUI = () => {
     }
   }, [messages]);
 
-  if (!user) return <div>Loading...</div>;
   const handleSend = async () => {
     if (input.trim()) {
       const userMessage = input;
